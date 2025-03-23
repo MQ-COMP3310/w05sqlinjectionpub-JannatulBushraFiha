@@ -52,7 +52,7 @@ public class App {
 
         // let's add some words to valid 4 letter words from the data.txt file
 
-        try (BufferedReader br = new BufferedReader(new FileReader("resources/data.txt"))) {
+        try (BufferedReader br = new BufferedReader(new FileReader("/Users/jannatulbushrafiha/week5/w05sqlinjectionpub-JannatulBushraFiha/resources/data.txt"))) {
             String line;
             int i = 1;
             while ((line = br.readLine()) != null) {
@@ -74,6 +74,7 @@ public class App {
             String guess = scanner.nextLine();
 
             while (!guess.equals("q")) {
+               // if (guess.matches("^[a-z]{4}$"))
                 System.out.println("You've guessed '" + guess+"'.");
 
                 if (wordleDatabaseConnection.isValidWord(guess)) { 
