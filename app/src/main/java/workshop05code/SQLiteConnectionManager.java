@@ -1,5 +1,6 @@
 package workshop05code;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -8,15 +9,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-
-//Import for logging exercise
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
-
-import sun.jvmstat.perfdata.monitor.PerfStringMonitor;
 
 public class SQLiteConnectionManager {
     //Start code logging exercise
@@ -52,7 +46,7 @@ public class SQLiteConnectionManager {
      * @param fileName the database file name
      */
     public SQLiteConnectionManager(String filename) {
-        databaseURL = "jdbc:sqlite:/Users/jannatulbushrafiha/Desktop/sqLite/" + filename;
+        databaseURL = "jdbc:sqlite:sqlite/" + filename;
 
     }
 
@@ -79,7 +73,7 @@ public class SQLiteConnectionManager {
      * Check that the file has been cr3eated
      *
      * @return true if the file exists in the correct location, false otherwise. If
-     *         no url defined, also false.
+     * no url defined, also false.
      */
     public boolean checkIfConnectionDefined() {
         if (databaseURL.equals("")) {
@@ -124,24 +118,25 @@ public class SQLiteConnectionManager {
     /**
      * Take an id and a word and store the pair in the valid words
      * 
-     * @param id   the unique id for the word
+     * @param id the unique id for the word
      * @param word the word to store
      */
     public void addValidWord(int id, String word) {
-
-        String sql = "INSERT INTO validWords(id,word) VALUES(?,?)";
-   
-
+        String sql = "INSERT INTO validWords(id, word) VALUES(?, ?)"; 
+    
         try (Connection conn = DriverManager.getConnection(databaseURL);
-                PreparedStatement pstmt = conn.prepareStatement(sql)) {
-                  pstmt.setInt(1, id);
-        pstmt.setString(2,word);
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                       
+            pstmt.setInt(1, id);
+            pstmt.setString(2, word);
+    
             pstmt.executeUpdate();
+            
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-
     }
+    
 
     /**
      * Possible weakness here?
@@ -150,24 +145,25 @@ public class SQLiteConnectionManager {
      * @return true if guess exists in the database, false otherwise
      */
     public boolean isValidWord(String guess) {
-        String sql = "SELECT count(id) as total FROM validWords WHERE word like=?";
-
+        String sql = "SELECT count(id) as total FROM validWords WHERE word LIKE ?";
+    
         try (Connection conn = DriverManager.getConnection(databaseURL);
-                PreparedStatement stmt = conn.prepareStatement(sql)) {
-                    stmt.setString(1,guess);
-
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+    
+            stmt.setString(1, guess); 
             ResultSet resultRows = stmt.executeQuery();
+    
             if (resultRows.next()) {
                 int result = resultRows.getInt("total");
                 return (result >= 1);
             }
-
+    
             return false;
-
+    
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             return false;
         }
-
     }
+    
 }
